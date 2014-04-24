@@ -13,8 +13,18 @@ var svg = d3.select("#viz").append("svg")
 
 function ready(error, us) { 
   console.log(us);
+
+  var states = topojson.feature(us, us.objects.states);
+
+  var projection = d3.geo.albersUsa()
+    .scale(1000)
+    .translate([width / 2, height / 2]);
+
+  var path = d3.geo.path()
+    .projection(projection);
+  
   svg.append("path")
-    .datum(topojson.feature(us, us.objects.states))
-    .attr("d", d3.geo.path().projection(d3.geo.mercator()));
+    .datum(states)
+    .attr("d", path);
 }  
 
