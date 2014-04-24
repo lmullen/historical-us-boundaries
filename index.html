@@ -6,7 +6,23 @@
 <script src="http://d3js.org/queue.v1.min.js"></script>
 <script src="http://d3js.org/topojson.v1.min.js" charset="utf-8"></script>
 <style>
-
+.unit {
+  fill: none;
+  stroke: #555;
+  visibility: hidden;
+}
+.active {
+  visibility: visible;
+}
+.State {
+  fill: #7fc97f;
+}
+.Territory {
+  fill: #fdc086;
+}
+.unit:hover {
+  fill: red;
+}
 </style>
 </head>
 <body>
