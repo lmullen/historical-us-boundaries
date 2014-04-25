@@ -2,7 +2,7 @@ queue()
   .defer(d3.json, "us.json")
   .await(ready);
 
-var margin = {top: 10, right: 10, bottom: 10, left: 10};
+var margin = {top: 10, right: 20, bottom: 10, left: 20};
 var width = 960 - margin.left - margin.right,
     height = 500 - margin.top - margin.bottom;
 var svg = d3.select("#viz").append("svg")
@@ -20,6 +20,7 @@ function ready(error, us) {
   console.log(us.objects.states.geometries[0]); 
 
   var tooltip = d3.select("body").append("div")
+    .classed("hidden", true)
     .attr("class", "tooltip");
 
   var states = topojson.feature(us, us.objects.states);
@@ -42,7 +43,6 @@ function ready(error, us) {
     })
     .attr("d", path)
     .filter(function(d) {
-      console.log(new Date(d.properties.START_DATE).toString());
       return Date.parse(d.properties.START_DATE) <= dispDate &&
              dispDate <= Date.parse(d.properties.END_DATE);
     })
@@ -63,6 +63,69 @@ function ready(error, us) {
       tooltip.classed("hidden", true);
     });
 
+  // Slider
+  var x = d3.scale.linear()
+      .domain([1790, 2000])
+      .range([0, width])
+      .clamp(true);
+
+  var brush = d3.svg.brush()
+      .x(x)
+      .extent([0, 0])
+      .on("brush", brushed);
+
+  slider_height = 20;
+
+  var slider_svg = d3.select("#slider").append("svg")
+      .attr("width", width + margin.left + margin.right)
+      .attr("height", slider_height + margin.top + margin.bottom)
+    .append("g")
+      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+  slider_svg.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + slider_height / 2 + ")")
+      .call(d3.svg.axis()
+        .scale(x)
+        .orient("bottom")
+        .tickFormat(function(d) { return d; })
+        .tickSize(0)
+        .tickPadding(12))
+    .select(".domain")
+    .select(function() { return this.parentNode.appendChild(this.cloneNode(true)); })
+      .attr("class", "halo");
+
+  var slider = slider_svg.append("g")
+      .attr("class", "slider")
+      .call(brush);
+
+  slider.selectAll(".extent,.resize")
+      .remove();
+
+  slider.select(".background")
+      .attr("height", slider_height);
+
+  var handle = slider.append("circle")
+      .attr("class", "handle")
+      .attr("transform", "translate(0," + slider_height / 2 + ")")
+      .attr("r", 9);
+
+  slider
+      .call(brush.event)
+      .call(brush.extent([1861, 1861]))
+      .call(brush.event);
+
+  function brushed() {
+    var value = brush.extent()[0];
+
+    if (d3.event.sourceEvent) { // not a programmatic event
+      value = x.invert(d3.mouse(this)[0]);
+      brush.extent([value, value]);
+    }
+
+    handle.attr("cx", x(value));
+    d3.select("#date").html(value);
+  }
 }  
 
 function niceDate(date) {
