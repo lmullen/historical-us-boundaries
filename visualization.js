@@ -11,7 +11,7 @@ var svg = d3.select("#viz").append("svg")
   .append("g")
   .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-var dispDate = new Date(1790,0,01);
+var dispDate = new Date(1783,8,3);
 
 // d3.select("#date").html("<strong>" + niceDate(dispDate) + "</strong>");
 
@@ -64,8 +64,8 @@ function ready(error, us) {
     // });
 
   // Slider
-  var start = new Date(1790, 0, 1),
-      end   = new Date(2000, 0, 1);
+  var start = new Date(1783, 8, 3),
+      end   = new Date(1960, 0, 1);
 
   var x = d3.time.scale()
       .domain([start, end])
@@ -145,7 +145,7 @@ function ready(error, us) {
       var mouse = d3.mouse(svg.node()).map( function(d) { return parseInt(d); } );
       tooltip
         .classed("hidden", false)
-        .attr("style", "left:" + (mouse[0]+30)+"px; top:" + mouse[1] + "px")
+        .attr("style", "left:" + (mouse[0]+50)+"px; top:" + mouse[1] + "px")
         .html("<h4>" + d.properties.FULL_NAME + "</h4><p>" +
               "<strong>Type:</strong> " + d.properties.TERR_TYPE + "<br>" +
               "<strong>Boundary begin:</strong> " + niceDate(d.properties.START_DATE) + "<br>" +
