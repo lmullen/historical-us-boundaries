@@ -16,10 +16,8 @@ var dispDate = new Date(1783,8,3);
 // d3.select("#date").html("<strong>" + niceDate(dispDate) + "</strong>");
 
 function ready(error, us) { 
-  console.log(us);
-  console.log(us.objects.states.geometries[0]); 
 
-  var tooltip = d3.select("body").append("div")
+  var tooltip = d3.select("#viz").append("div")
     .classed("hidden", true)
     .attr("class", "tooltip");
 
@@ -129,23 +127,21 @@ function ready(error, us) {
     handle.attr("cx", x(value));
     d3.select("#date").html(niceDate(value));
 
-    console.log(value);
-
     svg
     .selectAll(".unit")
     .data(states.features)
     .classed("active", false)
     .filter(function(d) {
-      console.log(d);
       return Date.parse(d.properties.START_DATE) <= value &&
              value <= Date.parse(d.properties.END_DATE);
     })
     .classed("active", true)
     .on("mousemove", function(d, i) {
       var mouse = d3.mouse(svg.node()).map( function(d) { return parseInt(d); } );
+      var offset = d3.select("#viz")[0][0].offsetLeft;
       tooltip
         .classed("hidden", false)
-        .attr("style", "left:" + (mouse[0]+50)+"px; top:" + mouse[1] + "px")
+        .attr("style", "left:" + (mouse[0] + offset + 40)+"px; top:" + mouse[1] + "px")
         .html("<h4>" + d.properties.FULL_NAME + "</h4><p>" +
               "<strong>Type:</strong> " + d.properties.TERR_TYPE + "<br>" +
               "<strong>Boundary begin:</strong> " + niceDate(d.properties.START_DATE) + "<br>" +
