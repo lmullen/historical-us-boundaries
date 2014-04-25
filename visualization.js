@@ -128,6 +128,35 @@ function ready(error, us) {
 
     handle.attr("cx", x(value));
     d3.select("#date").html(niceDate(value));
+
+    console.log(value);
+
+    svg
+    .selectAll(".unit")
+    .data(states.features)
+    .classed("active", false)
+    .filter(function(d) {
+      console.log(d);
+      return Date.parse(d.properties.START_DATE) <= value &&
+             value <= Date.parse(d.properties.END_DATE);
+    })
+    .classed("active", true)
+    .on("mousemove", function(d, i) {
+      var mouse = d3.mouse(svg.node()).map( function(d) { return parseInt(d); } );
+      tooltip
+        .classed("hidden", false)
+        .attr("style", "left:" + (mouse[0]+30)+"px; top:" + mouse[1] + "px")
+        .html("<h4>" + d.properties.FULL_NAME + "</h4><p>" +
+              "<strong>Type:</strong> " + d.properties.TERR_TYPE + "<br>" +
+              "<strong>Boundary begin:</strong> " + niceDate(d.properties.START_DATE) + "<br>" +
+              "<strong>Boundary end:</strong> " + niceDate(d.properties.END_DATE) + "<br>" +
+              "<strong>Explanation of boundary change:</strong> " + d.properties.CHANGE + "</p>"
+             ); 
+    })
+    .on("mouseout", function(d, i) {
+      tooltip.classed("hidden", true);
+    });
+
   }
 }  
 
