@@ -11,9 +11,9 @@ var svg = d3.select("#viz").append("svg")
   .append("g")
   .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-var dispDate = new Date(1821,6,04);
+var dispDate = new Date(1790,0,01);
 
-d3.select("#date").html("<strong>" + niceDate(dispDate) + "</strong>");
+// d3.select("#date").html("<strong>" + niceDate(dispDate) + "</strong>");
 
 function ready(error, us) { 
   console.log(us);
@@ -33,7 +33,7 @@ function ready(error, us) {
     .projection(projection);
   
   svg
-    .selectAll(".states")
+    .selectAll(".unit")
     .data(states.features)
     .enter()
     .append("path")
@@ -41,27 +41,27 @@ function ready(error, us) {
     .attr("class", function(d) { 
       return "unit " + d.id + " " + d.properties.TERR_TYPE; 
     })
-    .attr("d", path)
-    .filter(function(d) {
-      return Date.parse(d.properties.START_DATE) <= dispDate &&
-             dispDate <= Date.parse(d.properties.END_DATE);
-    })
-    .classed("active", true)
-    .on("mousemove", function(d, i) {
-      var mouse = d3.mouse(svg.node()).map( function(d) { return parseInt(d); } );
-      tooltip
-        .classed("hidden", false)
-        .attr("style", "left:" + (mouse[0]+30)+"px; top:" + mouse[1] + "px")
-        .html("<h4>" + d.properties.FULL_NAME + "</h4><p>" +
-              "<strong>Type:</strong> " + d.properties.TERR_TYPE + "<br>" +
-              "<strong>Boundary begin:</strong> " + niceDate(d.properties.START_DATE) + "<br>" +
-              "<strong>Boundary end:</strong> " + niceDate(d.properties.END_DATE) + "<br>" +
-              "<strong>Explanation of boundary change:</strong> " + d.properties.CHANGE + "</p>"
-             ); 
-    })
-    .on("mouseout", function(d, i) {
-      tooltip.classed("hidden", true);
-    });
+    .attr("d", path);
+    // .filter(function(d) {
+    //   return Date.parse(d.properties.START_DATE) <= dispDate &&
+    //          dispDate <= Date.parse(d.properties.END_DATE);
+    // })
+    // .classed("active", true)
+    // .on("mousemove", function(d, i) {
+    //   var mouse = d3.mouse(svg.node()).map( function(d) { return parseInt(d); } );
+    //   tooltip
+    //     .classed("hidden", false)
+    //     .attr("style", "left:" + (mouse[0]+30)+"px; top:" + mouse[1] + "px")
+    //     .html("<h4>" + d.properties.FULL_NAME + "</h4><p>" +
+    //           "<strong>Type:</strong> " + d.properties.TERR_TYPE + "<br>" +
+    //           "<strong>Boundary begin:</strong> " + niceDate(d.properties.START_DATE) + "<br>" +
+    //           "<strong>Boundary end:</strong> " + niceDate(d.properties.END_DATE) + "<br>" +
+    //           "<strong>Explanation of boundary change:</strong> " + d.properties.CHANGE + "</p>"
+    //          ); 
+    // })
+    // .on("mouseout", function(d, i) {
+    //   tooltip.classed("hidden", true);
+    // });
 
   // Slider
   var start = new Date(1790, 0, 1),
