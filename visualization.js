@@ -11,7 +11,7 @@ var svg = d3.select("#viz").append("svg")
   .append("g")
   .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-var dispDate = new Date(1861,6,04);
+var dispDate = new Date(1821,6,04);
 
 d3.select("#date").html("<strong>" + niceDate(dispDate) + "</strong>");
 
@@ -64,8 +64,11 @@ function ready(error, us) {
     });
 
   // Slider
-  var x = d3.scale.linear()
-      .domain([1790, 2000])
+  var start = new Date(1790, 0, 1),
+      end   = new Date(2000, 0, 1);
+
+  var x = d3.time.scale()
+      .domain([start, end])
       .range([0, width])
       .clamp(true);
 
@@ -88,7 +91,7 @@ function ready(error, us) {
       .call(d3.svg.axis()
         .scale(x)
         .orient("bottom")
-        .tickFormat(function(d) { return d; })
+        .tickFormat(function(d) { return d.getFullYear(); })
         .tickSize(0)
         .tickPadding(12))
     .select(".domain")
@@ -112,7 +115,7 @@ function ready(error, us) {
 
   slider
       .call(brush.event)
-      .call(brush.extent([1861, 1861]))
+      .call(brush.extent([dispDate, dispDate]))
       .call(brush.event);
 
   function brushed() {
@@ -124,7 +127,7 @@ function ready(error, us) {
     }
 
     handle.attr("cx", x(value));
-    d3.select("#date").html(value);
+    d3.select("#date").html(niceDate(value));
   }
 }  
 
