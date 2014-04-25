@@ -116,6 +116,19 @@ function ready(error, us) {
       .call(brush.extent([dispDate, dispDate]))
       .call(brush.event);
 
+  tooltip.classed("hidden", true);
+
+  var date_label = svg
+    .append("g")
+    .append("text")
+    .attr("class", "date-label")
+    .attr("text-anchor", "end")
+    .attr("x", width - 10)
+    .attr("y", 10)
+    .text(niceDate(dispDate));
+
+    console.log(date_label);
+
   function brushed() {
     var value = brush.extent()[0];
 
@@ -125,7 +138,8 @@ function ready(error, us) {
     }
 
     handle.attr("cx", x(value));
-    d3.select("#date").html(niceDate(value));
+    
+    svg.selectAll(".date-label").text(niceDate(value));
 
     svg
     .selectAll(".unit")
