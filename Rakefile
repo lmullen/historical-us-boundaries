@@ -1,19 +1,30 @@
-# Download the shapefile
+# Download the US boundaries shapefile
 file "US_AtlasHCB_StateTerr_Gen01.zip" do
   system %[curl -O http://publications.newberry.org/ahcbp/downloads/gis/US_AtlasHCB_StateTerr_Gen01.zip]
 end
 
-# Unzip the shapefile
+# Download the coastline shapefile
+file "ne_50m_coastline.zip" do
+  system %[curl -O http://www.nacis.org/naturalearth/50m/physical/ne_50m_coastline.zip]
+end
+
+# Unzip the US boundaries shapefile
 directory "US_AtlasHCB_StateTerr_Gen01" => ["US_AtlasHCB_StateTerr_Gen01.zip"] do
   system %[unzip US_AtlasHCB_StateTerr_Gen01.zip]
 end
 
+# Unzip the coastline shapefile
+file "ne_50m_coastline/ne_50m_coastline.shp" => ["ne_50m_coastline.zip"] do
+  system %[unzip ne_50m_coastline.zip -d ne_50m_coastline]
+end
 
 file "us.json" => ["US_AtlasHCB_StateTerr_Gen01"] do
   system %[topojson --id-property ID -p -o us.json states=US_AtlasHCB_StateTerr_Gen01/US_HistStateTerr_Gen01_Shapefile/US_HistStateTerr_Gen01.shp]
 end
 
-task :data => ["us.json"]
+file "coast.json" => ["ne_50m_coastline/ne_50m_coastline.shp"]
+
+task :data => ["us.json", "coast.json"]
 
 task :default => :push
 
