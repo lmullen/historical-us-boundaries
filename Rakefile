@@ -26,10 +26,10 @@ file "coast.json" => ["ne_50m_coastline/ne_50m_coastline.shp"]
 
 task :data => ["us.json", "coast.json"]
 
-task :default => :push
+task :default => :deploy
 
 desc "Push the project to lincolnmullen.com"
-task :push do
+task :deploy do
 
   ssh_port       = "22"
   ssh_user       = "reclaim"
