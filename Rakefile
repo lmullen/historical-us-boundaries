@@ -10,19 +10,25 @@ end
 
 # Unzip the US boundaries shapefile
 directory "US_AtlasHCB_StateTerr_Gen01" => ["US_AtlasHCB_StateTerr_Gen01.zip"] do
-  system %[unzip US_AtlasHCB_StateTerr_Gen01.zip]
+  system %[unzip -o US_AtlasHCB_StateTerr_Gen01.zip]
 end
 
 # Unzip the coastline shapefile
 file "ne_50m_coastline/ne_50m_coastline.shp" => ["ne_50m_coastline.zip"] do
-  system %[unzip ne_50m_coastline.zip -d ne_50m_coastline]
+  system %[unzip -o ne_50m_coastline.zip -d ne_50m_coastline]
 end
 
 file "us.json" => ["US_AtlasHCB_StateTerr_Gen01"] do
   system %[topojson --id-property ID -p -o us.json states=US_AtlasHCB_StateTerr_Gen01/US_HistStateTerr_Gen01_Shapefile/US_HistStateTerr_Gen01.shp]
 end
 
-file "coast.json" => ["ne_50m_coastline/ne_50m_coastline.shp"]
+file "coast.json" => ["ne_50m_coastline/ne_50m_coastline.shp"] do 
+  # Just North America
+  # system %[ogr2ogr -f "ESRI Shapefile" ocean_clipped \
+  #          ne_50m_coastline/ne_50m_coastline.shp \
+  #          -clipsrc -167.2764, 5.4995, -52.2330, 83.1621]
+  system %[topojson -o coast.json coast=ne_50m_coastline/ne_50m_coastline.shp]
+end
 
 task :data => ["us.json", "coast.json"]
 
@@ -50,7 +56,10 @@ end
 require "rake/clean"
 
 CLEAN.include("US_AtlasHCB_StateTerr_Gen01.zip", 
-              "US_AtlasHCB_StateTerr_Gen01")
+              "US_AtlasHCB_StateTerr_Gen01",
+             "ocean_clipped*",
+             "ne_50m_coastline",
+             "ne_50m_coastline.zip")
 
-CLOBBER.include("us.json")
+CLOBBER.include("us.json", "coast.json")
 
