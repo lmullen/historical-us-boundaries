@@ -137,6 +137,32 @@ function ready(error, us, coast) {
     .attr("y", 40)
     .text(niceDate(dispDate));
 
+  var legend = svg
+    .append("g");
+
+  labels = ["State", "Unorganized", "Territory",
+            "Seceded", "Reconstruction", "Other"];
+
+  for(i = 0; i < labels.length; i++) {
+
+    legend
+      .append("circle")
+      .classed("unit", true)
+      .classed("active", true)
+      .classed(labels[i], true)
+      .attr("cx", width - 105)
+      .attr("cy", 200 + i * 30)
+      .attr("r", 10);
+
+    legend
+      .append("text")
+      .attr("x", width - 90)
+      .attr("y", 206 + i * 30)
+      .attr("text-anchor", "start")
+      .text(labels[i]);
+
+  }
+
   function brushed() {
     var value = brush.extent()[0];
 
@@ -159,12 +185,10 @@ function ready(error, us, coast) {
     })
     .classed("active", true)
     .classed("Seceded", function(d) {
-      console.log(d.properties.secession_start);
       return Date.parse(d.properties.secession_start) <= value &&
              value <= Date.parse(d.properties.reconstruction_start);
     })
     .classed("Reconstruction", function(d) {
-      console.log(d.properties.secession_start);
       return Date.parse(d.properties.reconstruction_start) <= value &&
              value < Date.parse(d.properties.reconstruction_end);
     })
