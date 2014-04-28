@@ -1,5 +1,6 @@
 queue()
   .defer(d3.json, "us.json")
+  .defer(d3.json, "coast.json")
   .await(ready);
 
 var margin = {top: 10, right: 20, bottom: 10, left: 20};
@@ -19,22 +20,25 @@ var slider_svg = d3.select("#slider").append("svg")
   .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-
 var dispDate = new Date(1783,8,3);
 
 // d3.select("#date").html("<strong>" + niceDate(dispDate) + "</strong>");
 
-function ready(error, us) { 
+function ready(error, us, coast) { 
 
   var tooltip = d3.select("#viz").append("div")
     .classed("hidden", true)
     .attr("class", "tooltip");
 
-  var states = topojson.feature(us, us.objects.states);
+    console.log(coast);
 
-  var projection = d3.geo.albersUsa()
-    .scale(1000)
-    .translate([width / 2, height / 2]);
+  var states = topojson.feature(us, us.objects.states);
+  var coastline  = topojson.feature(coast, coast.objects.coast);
+
+  // var projection = d3.geo.mercator()
+  var projection = d3.geo.albers()
+    .scale(1100)
+    .translate([ .5 * width, .5 * height]);
 
   var path = d3.geo.path()
     .projection(projection);
@@ -70,9 +74,17 @@ function ready(error, us) {
     //   tooltip.classed("hidden", true);
     // });
 
+  svg
+    .selectAll(".coastline")
+    .data(coastline.features)
+    .enter()
+    .append("path")
+    .attr("class", "coast")
+    .attr("d", path);
+
   // Slider
   var start = new Date(1783, 8, 3),
-      end   = new Date(1960, 0, 1);
+      end   = new Date(1912, 11, 31);
 
   var x = d3.time.scale()
       .domain([start, end])
@@ -124,8 +136,8 @@ function ready(error, us) {
     .append("text")
     .attr("class", "date-label")
     .attr("text-anchor", "end")
-    .attr("x", width - 10)
-    .attr("y", 10)
+    .attr("x", width - 175)
+    .attr("y", 40)
     .text(niceDate(dispDate));
 
     console.log(date_label);
