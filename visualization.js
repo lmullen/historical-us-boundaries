@@ -38,7 +38,7 @@ function ready(error, us, coast) {
   // var projection = d3.geo.mercator()
   var projection = d3.geo.albers()
     .scale(1100)
-    .translate([ .5 * width, .5 * height]);
+    .translate([ 0.5 * width, 0.5 * height]);
 
   var path = d3.geo.path()
     .projection(projection);
