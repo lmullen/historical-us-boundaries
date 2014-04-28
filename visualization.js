@@ -30,8 +30,6 @@ function ready(error, us, coast) {
     .classed("hidden", true)
     .attr("class", "tooltip");
 
-    console.log(coast);
-
   var states = topojson.feature(us, us.objects.states);
   var coastline  = topojson.feature(coast, coast.objects.coast);
 
@@ -48,7 +46,6 @@ function ready(error, us, coast) {
     .data(states.features)
     .enter()
     .append("path")
-    .attr("title", function(d,i) { return d.properties.TERR_TYPE; })
     .attr("class", function(d) { 
       return "unit " + d.id + " " + d.properties.TERR_TYPE; 
     })
@@ -140,8 +137,6 @@ function ready(error, us, coast) {
     .attr("y", 40)
     .text(niceDate(dispDate));
 
-    console.log(date_label);
-
   function brushed() {
     var value = brush.extent()[0];
 
@@ -163,9 +158,20 @@ function ready(error, us, coast) {
              value <= Date.parse(d.properties.END_DATE);
     })
     .classed("active", true)
+    .classed("Seceded", function(d) {
+      console.log(d.properties.secession_start);
+      return Date.parse(d.properties.secession_start) <= value &&
+             value <= Date.parse(d.properties.reconstruction_start);
+    })
+    .classed("Reconstruction", function(d) {
+      console.log(d.properties.secession_start);
+      return Date.parse(d.properties.reconstruction_start) <= value &&
+             value < Date.parse(d.properties.reconstruction_end);
+    })
     .on("mousemove", function(d, i) {
       var mouse = d3.mouse(svg.node()).map( function(d) { return parseInt(d); } );
       var offset = d3.select("#viz")[0][0].offsetLeft;
+
       tooltip
         .classed("hidden", false)
         .attr("style", "left:" + (mouse[0] + offset + 40)+"px; top:" + mouse[1] + "px")
