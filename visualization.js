@@ -11,6 +11,15 @@ var svg = d3.select("#viz").append("svg")
   .append("g")
   .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
+slider_height = 20;
+
+var slider_svg = d3.select("#slider").append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", slider_height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+
 var dispDate = new Date(1783,8,3);
 
 // d3.select("#date").html("<strong>" + niceDate(dispDate) + "</strong>");
@@ -74,14 +83,6 @@ function ready(error, us) {
       .x(x)
       .extent([0, 0])
       .on("brush", brushed);
-
-  slider_height = 20;
-
-  var slider_svg = d3.select("#slider").append("svg")
-      .attr("width", width + margin.left + margin.right)
-      .attr("height", slider_height + margin.top + margin.bottom)
-    .append("g")
-      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
   slider_svg.append("g")
       .attr("class", "x axis")
