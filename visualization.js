@@ -131,9 +131,10 @@ function ready(error, us, coast) {
   var date_label = svg
     .append("g")
     .append("text")
+    .classed("date-label", true)
     .classed("map-label", true)
     .attr("text-anchor", "start")
-    .attr("x", width - 115)
+    .attr("x", width - 125)
     .attr("y", 220)
     .text(niceDate(dispDate));
 
@@ -150,14 +151,14 @@ function ready(error, us, coast) {
       .classed("unit", true)
       .classed("active", true)
       .classed(labels[i], true)
-      .attr("cx", width - 105)
+      .attr("cx", width - 115)
       .attr("cy", 250 + i * 30)
       .attr("r", 10);
 
     legend
       .append("text")
       .classed("map-label", true)
-      .attr("x", width - 90)
+      .attr("x", width - 100)
       .attr("y", 256 + i * 30)
       .attr("text-anchor", "start")
       .text(labels[i]);
