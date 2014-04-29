@@ -24,10 +24,10 @@ end
 
 file "coast.json" => ["ne_50m_coastline/ne_50m_coastline.shp"] do 
   # Just North America
-  # system %[ogr2ogr -f "ESRI Shapefile" ocean_clipped \
-  #          ne_50m_coastline/ne_50m_coastline.shp \
-  #          -clipsrc -167.2764, 5.4995, -52.2330, 83.1621]
-  system %[topojson -o coast.json coast=ne_50m_coastline/ne_50m_coastline.shp]
+  system %[ogr2ogr -f "ESRI Shapefile" ocean_clipped \
+           ne_50m_coastline/ne_50m_coastline.shp \
+           -clipsrc -167.2764, 5.4995, -52.2330, 83.1621]
+  system %[topojson -o coast.json coast=ocean_clipped/ne_50m_coastline.shp]
 end
 
 task :data => ["us.json", "coast.json"]
