@@ -9,7 +9,7 @@ file "ne_50m_coastline.zip" do
 end
 
 # Unzip the US boundaries shapefile
-directory "US_AtlasHCB_StateTerr_Gen01" => ["US_AtlasHCB_StateTerr_Gen01.zip"] do
+file "US_AtlasHCB_StateTerr_Gen01/US_HistStateTerr_Gen01_Shapefile/US_HistStateTerr_Gen01.shp" => ["US_AtlasHCB_StateTerr_Gen01.zip"] do
   system %[unzip -o US_AtlasHCB_StateTerr_Gen01.zip]
 end
 
@@ -18,7 +18,7 @@ file "ne_50m_coastline/ne_50m_coastline.shp" => ["ne_50m_coastline.zip"] do
   system %[unzip -o ne_50m_coastline.zip -d ne_50m_coastline]
 end
 
-file "us.json" => ["US_AtlasHCB_StateTerr_Gen01"] do
+file "us.json" => ["US_AtlasHCB_StateTerr_Gen01/US_HistStateTerr_Gen01_Shapefile/US_HistStateTerr_Gen01.shp"] do
   system %[topojson -e cw.csv --id-property ID -p -o us.json states=US_AtlasHCB_StateTerr_Gen01/US_HistStateTerr_Gen01_Shapefile/US_HistStateTerr_Gen01.shp]
 end
 
