@@ -7,10 +7,9 @@ file "US_AtlasHCB_StateTerr_Gen01" => ["US_AtlasHCB_StateTerr_Gen01.zip"] do |t|
   system %[unzip -o #{t.prerequisites.first}]
 end
 
-file "us.json" => ["US_AtlasHCB_StateTerr_Gen01", "DC_AtlasHCB"] do
+file "us.json" => ["US_AtlasHCB_StateTerr_Gen01"] do
   system %[topojson -e cw.csv --id-property ID -p -o us.json \
-  states=US_AtlasHCB_StateTerr_Gen01/US_HistStateTerr_Gen01_Shapefile/US_HistStateTerr_Gen01.shp \
-  dc=DC_AtlasHCB/DC_Historical_Counties/DC_Historical_Counties.shp]
+  states=US_AtlasHCB_StateTerr_Gen01/US_HistStateTerr_Gen01_Shapefile/US_HistStateTerr_Gen01.shp]
 end
 
 # Coastline
@@ -28,15 +27,6 @@ file "coast.json" => ["ne_50m_coastline"] do
            ne_50m_coastline/ne_50m_coastline.shp \
            -clipsrc -129, 22, -59, 54]
   system %[topojson -o coast.json coast=ocean_clipped/ne_50m_coastline.shp]
-end
-
-# DC 
-file "DC_AtlasHCB.zip" do
-  system %[curl -O http://publications.newberry.org/ahcbp/downloads/gis/DC_AtlasHCB.zip]
-end
-
-file "DC_AtlasHCB" => ["DC_AtlasHCB.zip"] do |t|
-  system %[unzip -o #{t.prerequisites.first}]
 end
 
 results = FileList["us.json", "coast.json"]
