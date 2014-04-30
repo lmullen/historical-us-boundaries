@@ -182,8 +182,8 @@ function ready(error, us, coast) {
             .data(states.features)
             .classed("active", false)
             .filter(function(d) {
-              return Date.parse(d.properties.START_DATE) <= value &&
-                value <= Date.parse(d.properties.END_DATE);
+              return dateParser(d.properties.START_DATE) <= value &&
+                value <= dateParser(d.properties.END_DATE);
             })
             .classed("active", true)
             .classed("Seceded", function(d) {
@@ -244,5 +244,9 @@ function reconstruction(d) {
   if (d.properties.reconstruction_end) {
   return "<strong>Re-admitted to Congress:</strong> " + d.properties.reconstruction_end + "<br>";
   } else {return "";}
+}
+
+function dateParser(string) {
+  if (string) { return new Date(string.substring(0, 10)); }
 }
 
