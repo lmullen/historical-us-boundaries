@@ -1,38 +1,47 @@
-# Download the US boundaries shapefile
+# US boundaries 
 file "US_AtlasHCB_StateTerr_Gen01.zip" do
   system %[curl -O http://publications.newberry.org/ahcbp/downloads/gis/US_AtlasHCB_StateTerr_Gen01.zip]
 end
 
-# Download the coastline shapefile
+file "US_AtlasHCB_StateTerr_Gen01" => ["US_AtlasHCB_StateTerr_Gen01.zip"] do |t|
+  system %[unzip -o #{t.prerequisites.first}]
+end
+
+file "us.json" => ["US_AtlasHCB_StateTerr_Gen01", "DC_AtlasHCB"] do
+  system %[topojson -e cw.csv --id-property ID -p -o us.json \
+  states=US_AtlasHCB_StateTerr_Gen01/US_HistStateTerr_Gen01_Shapefile/US_HistStateTerr_Gen01.shp \
+  dc=DC_AtlasHCB/DC_Historical_Counties/DC_Historical_Counties.shp]
+end
+
+# Coastline
 file "ne_50m_coastline.zip" do
   system %[curl -O http://www.nacis.org/naturalearth/50m/physical/ne_50m_coastline.zip]
 end
 
-# Unzip the US boundaries shapefile
-file "US_AtlasHCB_StateTerr_Gen01/US_HistStateTerr_Gen01_Shapefile/US_HistStateTerr_Gen01.shp" => ["US_AtlasHCB_StateTerr_Gen01.zip"] do
-  system %[unzip -o US_AtlasHCB_StateTerr_Gen01.zip]
+file "ne_50m_coastline" => ["ne_50m_coastline.zip"] do |t|
+  system %[unzip -o #{t.prerequisites.first} -d #{t.name}]
 end
 
-# Unzip the coastline shapefile
-file "ne_50m_coastline/ne_50m_coastline.shp" => ["ne_50m_coastline.zip"] do
-  system %[unzip -o ne_50m_coastline.zip -d ne_50m_coastline]
-end
-
-file "us.json" => ["US_AtlasHCB_StateTerr_Gen01/US_HistStateTerr_Gen01_Shapefile/US_HistStateTerr_Gen01.shp"] do
-  system %[topojson -e cw.csv --id-property ID -p -o us.json states=US_AtlasHCB_StateTerr_Gen01/US_HistStateTerr_Gen01_Shapefile/US_HistStateTerr_Gen01.shp]
-end
-
-file "coast.json" => ["ne_50m_coastline/ne_50m_coastline.shp"] do 
-  # Just North America
+file "coast.json" => ["ne_50m_coastline"] do 
+  # Clip to area around US
   system %[ogr2ogr -f "ESRI Shapefile" ocean_clipped \
            ne_50m_coastline/ne_50m_coastline.shp \
-           -clipsrc -167.2764, 5.4995, -52.2330, 83.1621]
+           -clipsrc -129, 22, -59, 54]
   system %[topojson -o coast.json coast=ocean_clipped/ne_50m_coastline.shp]
 end
 
-task :data => ["us.json", "coast.json"]
+# DC 
+file "DC_AtlasHCB.zip" do
+  system %[curl -O http://publications.newberry.org/ahcbp/downloads/gis/DC_AtlasHCB.zip]
+end
 
-task :default => :deploy
+file "DC_AtlasHCB" => ["DC_AtlasHCB.zip"] do |t|
+  system %[unzip -o #{t.prerequisites.first}]
+end
+
+results = FileList["us.json", "coast.json"]
+
+task :default => results
 
 desc "Push the project to lincolnmullen.com"
 task :deploy do
@@ -55,11 +64,11 @@ end
 
 require "rake/clean"
 
-CLEAN.include("US_AtlasHCB_StateTerr_Gen01.zip", 
-              "US_AtlasHCB_StateTerr_Gen01",
+CLEAN.include("US_AtlasHCB_StateTerr_Gen01",
              "ocean_clipped*",
              "ne_50m_coastline",
-             "ne_50m_coastline.zip")
+             "DC_AtlasHCB")
 
-CLOBBER.include("us.json", "coast.json")
+CLOBBER.include("*.json")
+
 
