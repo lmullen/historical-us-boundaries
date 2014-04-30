@@ -160,12 +160,10 @@ function ready(error, us, coast) {
             svg
             .selectAll(".unit")
             .data(states.features)
-            .classed("active", false)
-            .filter(function(d) {
+            .classed("active", function(d) {
               return dateParser(d.properties.START_DATE) <= value &&
                 value <= dateParser(d.properties.END_DATE);
             })
-            .classed("active", true)
             .classed("Seceded", function(d) {
               return Date.parse(d.properties.secession_start) <= value &&
                 value <= Date.parse(d.properties.reconstruction_start);
