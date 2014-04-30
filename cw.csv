@@ -1,12 +1,21 @@
-"ID","secession_start","reconstruction_start","reconstruction_end"
-"tn_state","June 8, 1861","March 2, 1867","July 24, 1866"
-"ar_state","May 6, 1861","March 2, 1867","June 22, 1868"
-"fl_state","January 10, 1861","March 2, 1867","June 25, 1868"
-"nc_state","May 20, 1861","March 2, 1867","July 4, 1868"
-"sc_state","December 20, 1860","March 2, 1867","July 9, 1868"
-"la_state","January 26, 1861","March 2, 1867","July 9, 1868"
-"al_state","January 11, 1861","March 2, 1867","July 13, 1868"
-"va_state","April 17, 1861","March 2, 1867","January 26, 1870"
-"ms_state","January 9, 1861","March 2, 1867","February 23, 1870"
-"tx_state","February 1, 1861","March 2, 1867","March 30, 1870"
-"ga_state","January 19, 1861","March 2, 1867","July 15, 1870"
+"ID","ratified","secession_start","reconstruction_start","reconstruction_end"
+"tn_state",,"June 8, 1861","March 2, 1867","July 24, 1866"
+"ar_state",,"May 6, 1861","March 2, 1867","June 22, 1868"
+"fl_state",,"January 10, 1861","March 2, 1867","June 25, 1868"
+"nc_state","November 21, 1789","May 20, 1861","March 2, 1867","July 4, 1868"
+"sc_state","May 23, 1788","December 20, 1860","March 2, 1867","July 9, 1868"
+"la_state",,"January 26, 1861","March 2, 1867","July 9, 1868"
+"al_state",,"January 11, 1861","March 2, 1867","July 13, 1868"
+"va_state","June 25, 1788","April 17, 1861","March 2, 1867","January 26, 1870"
+"ms_state",,"January 9, 1861","March 2, 1867","February 23, 1870"
+"tx_state",,"February 1, 1861","March 2, 1867","March 30, 1870"
+"ga_state","January 2, 1788","January 19, 1861","March 2, 1867","July 15, 1870"
+"de_state","December 7, 1787",,,
+"pa_state","December 12, 1787",,,
+"nj_state","December 18, 1787",,,
+"ct_state","January 9, 1788",,,
+"ma_state","February 6, 1788",,,
+"md_state","April 28, 1788",,,
+"nh_state","June 21, 1788",,,
+"ny_state","July 26, 1788",,,
+"ri_state","May 29, 1790",,,
