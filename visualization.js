@@ -27,8 +27,8 @@ var dispDate = new Date(1783,8,3);
 function ready(error, us, coast) { 
 
   var tooltip = d3.select("#viz").append("div")
-  .classed("hidden", true)
-  .attr("class", "tooltip");
+  .classed("tooltip", true)
+  .classed("hidden", true);
 
   var states = topojson.feature(us, us.objects.states);
   var coastline  = topojson.feature(coast, coast.objects.coast);
@@ -105,8 +105,6 @@ function ready(error, us, coast) {
         .call(brush.event)
         .call(brush.extent([dispDate, dispDate]))
         .call(brush.event);
-
-        tooltip.classed("hidden", true);
 
         var date_label = svg
         .append("g")
