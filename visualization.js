@@ -62,6 +62,14 @@ function ready(error, us, coast) {
   var coastline  = topojson.feature(coast, coast.objects.coast);
 
   svg
+  .selectAll(".coast")
+  .data(coastline.features)
+  .enter()
+  .append("path")
+  .attr("class", "coast")
+  .attr("d", path);
+
+  svg
   .selectAll(".unit")
   .data(states.features)
   .enter()
@@ -71,14 +79,6 @@ function ready(error, us, coast) {
   })
   .attr("d", path)
   .on("click", clicked);
-
-  svg
-  .selectAll(".coastline")
-  .data(coastline.features)
-  .enter()
-  .append("path")
-  .attr("class", "coast")
-  .attr("d", path);
 
   // Slider
   var start = new Date(1783, 8, 3),
