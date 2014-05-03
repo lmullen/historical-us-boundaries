@@ -6,11 +6,14 @@ queue()
 var margin = {top: 10, right: 20, bottom: 10, left: 20};
 var width = 960 - margin.left - margin.right,
 height = 500 - margin.top - margin.bottom;
+var currentUnit = d3.select(null);
+
 var svg = d3.select("#viz").append("svg")
 .attr("width", width + margin.left + margin.right)
 .attr("height", height + margin.top + margin.bottom)
 .append("g")
-.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+.attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+.on("click", stopped, true);
 
 slider_height = 20;
 
@@ -24,22 +27,39 @@ var dispDate = new Date(1783,8,3);
 
 // d3.select("#date").html("<strong>" + niceDate(dispDate) + "</strong>");
 
-function ready(error, us, coast) { 
+var tooltip = d3.select("#viz").append("div")
+.classed("tooltip", true)
+.classed("hidden", true);
 
-  var tooltip = d3.select("#viz").append("div")
-  .classed("tooltip", true)
-  .classed("hidden", true);
+// var projection = d3.geo.mercator()
+var projection = d3.geo.albers()
+.scale(1100)
+.translate([ 0.5 * width, 0.5 * height]);
+
+var path = d3.geo.path()
+.projection(projection);
+
+var zoom = d3.behavior.zoom()
+    .translate([0, 0])
+    .scale(1)
+    .scaleExtent([1, 8])
+    .on("zoom", zoomed);
+
+svg
+    .call(zoom) // delete this line to disable free zooming
+    .call(zoom.event);
+
+svg.append("rect")
+    .attr("class", "background")
+    .attr("width", width)
+    .attr("height", height)
+    .on("click", reset);
+
+
+function ready(error, us, coast) { 
 
   var states = topojson.feature(us, us.objects.states);
   var coastline  = topojson.feature(coast, coast.objects.coast);
-
-  // var projection = d3.geo.mercator()
-  var projection = d3.geo.albers()
-  .scale(1100)
-  .translate([ 0.5 * width, 0.5 * height]);
-
-  var path = d3.geo.path()
-  .projection(projection);
 
   svg
   .selectAll(".unit")
@@ -49,7 +69,8 @@ function ready(error, us, coast) {
   .attr("class", function(d) { 
     return "unit " + d.id + " " + d.properties.TERR_TYPE; 
   })
-  .attr("d", path);
+  .attr("d", path)
+  .on("click", clicked);
 
   svg
   .selectAll(".coastline")
@@ -174,12 +195,11 @@ function ready(error, us, coast) {
               return value < Date.parse(d.properties.ratified);
             })
             .on("mousemove", function(d, i) {
-              var mouse = d3.mouse(svg.node()).map( function(d) { return parseInt(d); } );
-              var offset = d3.select("#viz")[0][0].offsetLeft;
+              var mouse = d3.mouse(d3.select("body").node());
 
               tooltip
               .classed("hidden", false)
-              .attr("style", "left:" + (mouse[0] + offset + 40)+"px; top:" + mouse[1] + "px")
+              .attr("style", "left:" + (mouse[0] + 20) +"px; top:" + (mouse[1] - 100) + "px")
               .html("<h4>" + d.properties.FULL_NAME + "</h4><p>" +
                   ratified(d) + 
                   seceded(d) +
@@ -226,3 +246,41 @@ function dateParser(string) {
   if (string) { return new Date(string.substring(0, 10)); }
 }
 
+function clicked(d) {
+  if (currentUnit.node() === this) return reset();
+  currentUnit.classed("current", false);
+  currentUnit = d3.select(this).classed("current", true);
+
+  var bounds = path.bounds(d),
+      dx = bounds[1][0] - bounds[0][0],
+      dy = bounds[1][1] - bounds[0][1],
+      x = (bounds[0][0] + bounds[1][0]) / 2,
+      y = (bounds[0][1] + bounds[1][1]) / 2,
+      scale = 0.75 / Math.max(dx / width, dy / height),
+      translate = [width / 2 - scale * x, height / 2 - scale * y];
+
+  svg.transition()
+      .duration(750)
+      .call(zoom.translate(translate).scale(scale).event);
+}
+
+function reset() {
+  currentUnit.classed("current", false);
+  currentUnit = d3.select(null);
+
+  svg.transition()
+      .duration(750)
+      .call(zoom.translate([0, 0]).scale(1).event);
+}
+
+function zoomed() {
+  svg.selectAll(".unit").style("stroke-width", 1.0 / d3.event.scale + "px");
+  svg.selectAll(".coast").style("stroke-width", 0.9 / d3.event.scale + "px");
+  svg.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
+}
+
+// If the drag behavior prevents the default click,
+// also stop propagation so we don’t click-to-zoom.
+function stopped() {
+  if (d3.event.defaultPrevented) d3.event.stopPropagation();
+}

@@ -17,15 +17,12 @@ file "ne_50m_coastline.zip" do
   system %[curl -O http://www.nacis.org/naturalearth/50m/physical/ne_50m_coastline.zip]
 end
 
-file "ne_50m_coastline" => ["ne_50m_coastline.zip"] do |t|
-  system %[unzip -o #{t.prerequisites.first} -d #{t.name}]
-end
-
-file "coast.json" => ["ne_50m_coastline"] do 
+file "coast.json" => ["ne_50m_coastline.zip"] do |t|
+  system %[unzip -o #{t.prerequisites.first} -d ne_50m_coastline]
   # Clip to area around US
   system %[ogr2ogr -f "ESRI Shapefile" ocean_clipped \
            ne_50m_coastline/ne_50m_coastline.shp \
-           -clipsrc -129, 22, -59, 54]
+           -clipsrc -171, 12, -51, 62]
   system %[topojson -o coast.json coast=ocean_clipped/ne_50m_coastline.shp]
 end
 
