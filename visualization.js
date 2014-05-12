@@ -5,7 +5,8 @@ queue()
 
 var margin = {top: 10, right: 20, bottom: 10, left: 20};
 var width = 960 - margin.left - margin.right,
-height = 500 - margin.top - margin.bottom;
+height = 500 - margin.top - margin.bottom,
+maxZoom = 4;
 var currentUnit = d3.select(null);
 
 var svg = d3.select("#viz").append("svg")
@@ -42,12 +43,12 @@ var path = d3.geo.path()
 var zoom = d3.behavior.zoom()
     .translate([0, 0])
     .scale(1)
-    .scaleExtent([1, 8])
+    .scaleExtent([1, maxZoom])
     .on("zoom", zoomed);
 
-svg
-    .call(zoom) // delete this line to disable free zooming
-    .call(zoom.event);
+// svg
+//     .call(zoom) // delete this line to disable free zooming
+//     .call(zoom.event);
 
 svg.append("rect")
     .attr("class", "background")
@@ -256,7 +257,7 @@ function clicked(d) {
       dy = bounds[1][1] - bounds[0][1],
       x = (bounds[0][0] + bounds[1][0]) / 2,
       y = (bounds[0][1] + bounds[1][1]) / 2,
-      scale = 0.75 / Math.max(dx / width, dy / height),
+      scale = Math.min(0.75 / Math.max(dx / width, dy / height), maxZoom),
       translate = [width / 2 - scale * x, height / 2 - scale * y];
 
   svg.transition()
@@ -274,6 +275,7 @@ function reset() {
 }
 
 function zoomed() {
+  var scale = Math.min(5, d3.event.scale);
   svg.selectAll(".unit").style("stroke-width", 1.0 / d3.event.scale + "px");
   svg.selectAll(".coast").style("stroke-width", 0.9 / d3.event.scale + "px");
   svg.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
