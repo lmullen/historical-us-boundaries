@@ -1,220 +1,240 @@
 <!DOCTYPE html>
-<html> 
+<html>
+
 <head>
-<title>Historical Boundaries of the United States</title>
-<meta name="author" content="Lincoln Mullen">
-<meta name="description" content="An interactive map of how political 
+  <title>Historical Boundaries of the United States</title>
+  <meta name="author" content="Lincoln Mullen">
+  <meta name="description" content="An interactive map of how political 
 boundaries of states and territories have changed in the United States.">
-<meta charset="utf-8">
+  <meta charset="utf-8">
 
-<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/foundation/5.1.1/css/normalize.min.css">
-<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/foundation/5.1.1/css/foundation.min.css">
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/foundation/5.1.1/css/normalize.min.css">
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/foundation/5.1.1/css/foundation.min.css">
 
-<style>
-h1 {
-  font-size: 2rem;
-  margin: 20px 0 20px 0;
-}
-path {
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-.background {
-  fill: none;
-  pointer-events: all;
-}
-.coast {
-  fill: none;
-  stroke: #555;
-  stroke-width: 0.9;
-}
-.unit {
-  fill: none;
-  stroke: #222;
-  cursor: pointer;
-  visibility: hidden;
-  display: none;
-  stroke-width: 1.0;
-}
-.active {
-  visibility: visible;
-  display: inline;
-}
-.State {
-  fill: #33a02c;
-}
-.Unratified {
-  fill: #b2df8a;
-}
-.Territory {
-  fill: #ff7f00;
-}
-.Unorganized {
-  fill: #fdbf6f;
-}
-.Seceded {
-  fill: #6a3d9a;
-}
-.Reconstruction {
-  fill: #cab2d6;
-}
-.Other {
-  fill: #b15928;
-}
-/* .Other2 {
+  <style>
+    h1 {
+      font-size: 2rem;
+      margin: 20px 0 20px 0;
+    }
+
+    path {
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .background {
+      fill: none;
+      pointer-events: all;
+    }
+
+    .coast {
+      fill: none;
+      stroke: #555;
+      stroke-width: 0.9;
+    }
+
+    .unit {
+      fill: none;
+      stroke: #222;
+      cursor: pointer;
+      visibility: hidden;
+      display: none;
+      stroke-width: 1.0;
+    }
+
+    .active {
+      visibility: visible;
+      display: inline;
+    }
+
+    .State {
+      fill: #33a02c;
+    }
+
+    .Unratified {
+      fill: #b2df8a;
+    }
+
+    .Territory {
+      fill: #ff7f00;
+    }
+
+    .Unorganized {
+      fill: #fdbf6f;
+    }
+
+    .Seceded {
+      fill: #6a3d9a;
+    }
+
+    .Reconstruction {
+      fill: #cab2d6;
+    }
+
+    .Other {
+      fill: #b15928;
+    }
+
+    /* .Other2 {
   fill: #ffff99; 
 } */
-.unit:hover {
-  fill: #e31a1c;
-}
-.tooltip {
-  color: #222;
-  background: #fff;
-  padding: .5em;
-  text-shadow: #f5f5f5 0 1px 0;
-  border-radius: 10px;
-  border-color: #a6a6a6;
-  border-width: 1px;
-  border-style: solid;
-  box-shadow: 0px 0px 2px 0px #a6a6a6; 
-  opacity: 0.9; 
-  position: absolute;
-  width: 300px;
-  display: block;
-}
-.tooltip h5 {
-  font-size: 0.95rem;
-}
+    .unit:hover {
+      fill: #e31a1c;
+    }
 
-.tooltip p {
-  font-size: 0.80rem;
-}
-.hidden {
-  display: none;
-  box-shadow: none;
-}
-.axis {
-  font: 10px sans-serif;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  user-select: none;
-}
+    .tooltip {
+      color: #222;
+      background: #fff;
+      padding: .5em;
+      text-shadow: #f5f5f5 0 1px 0;
+      border-radius: 10px;
+      border-color: #a6a6a6;
+      border-width: 1px;
+      border-style: solid;
+      box-shadow: 0px 0px 2px 0px #a6a6a6;
+      opacity: 0.9;
+      position: absolute;
+      width: 300px;
+      display: block;
+    }
 
-.axis .domain {
-  fill: none;
-  stroke: #000;
-  stroke-opacity: .3;
-  stroke-width: 10px;
-  stroke-linecap: round;
-}
+    .tooltip h5 {
+      font-size: 0.95rem;
+    }
 
-.axis .halo {
-  fill: none;
-  stroke: #ddd;
-  stroke-width: 8px;
-  stroke-linecap: round;
-}
+    .tooltip p {
+      font-size: 0.80rem;
+    }
 
-.slider .handle {
-  fill: #fff;
-  stroke: #000;
-  stroke-opacity: .5;
-  stroke-width: 1.25px;
-  pointer-events: none;
-}
-body #back-link {
-  position: absolute;
-  top: 0px;
-  right: 0px;
-  margin: 5px;
-}
-.map-label {
-  font-size: 16px;
-}
-</style>
+    .hidden {
+      display: none;
+      box-shadow: none;
+    }
 
-<script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
-<script src="https://d3js.org/queue.v1.min.js"></script>
-<script src="https://d3js.org/topojson.v1.min.js" charset="utf-8"></script>
+    .axis {
+      font: 10px sans-serif;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      user-select: none;
+    }
 
-<script>
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-  ga('create', 'UA-25121492-1', 'lincolnmullen.com');
-  ga('send', 'pageview');
-</script>
+    .axis .domain {
+      fill: none;
+      stroke: #000;
+      stroke-opacity: .3;
+      stroke-width: 10px;
+      stroke-linecap: round;
+    }
+
+    .axis .halo {
+      fill: none;
+      stroke: #ddd;
+      stroke-width: 8px;
+      stroke-linecap: round;
+    }
+
+    .slider .handle {
+      fill: #fff;
+      stroke: #000;
+      stroke-opacity: .5;
+      stroke-width: 1.25px;
+      pointer-events: none;
+    }
+
+    body #back-link {
+      position: absolute;
+      top: 0px;
+      right: 0px;
+      margin: 5px;
+    }
+
+    .map-label {
+      font-size: 16px;
+    }
+
+  </style>
+
+  <script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+  <script src="https://d3js.org/queue.v1.min.js"></script>
+  <script src="https://d3js.org/topojson.v1.min.js" charset="utf-8"></script>
 
 </head>
+
 <body>
-<div class="row">
-  <h1>Historical Boundaries of the United States, 1783&ndash;1912</h1>
-  <div id="viz"></div>
-  <div id="slider"></div>
-</div>
-<div class="row">
-  <hr>
-</div>
-<div class="row">
-  <div id="description">
-    <p>
-    A map of how boundaries of the states and territories of the
-    United States changed over time. This map is limited to the contiguous 
-    United States, and so does not include <a 
-    href="http://publications.newberry.org/ahcbp/pages/Alaska.html">Alaska</a> 
-  (purchased from Russia in 1867, organized as a territory in 1912, recognized 
-  as a state in 1959) or <a 
-  href="http://publications.newberry.org/ahcbp/pages/Hawaii.html">Hawaii</a> 
-(annexed 1898, organized as a territory in 1900, recognized as a state in 
-1959), or the many imperial ventures of the United States in Cuba, the 
-     Philippines, and other places. For reasons of scale, the <a 
-href="http://publications.newberry.org/ahcbp/pages/District_of_Columbia.html">District 
-of Columbia</a> is not shown, but DC was created in 1791, ceded territory back 
-to Virginia in 1846, and was organized as a territorial government from June 
-1, 1871 to June 20, 1874 (see chronologies from the and <a 
-href="http://publications.newberry.org/ahcbp/pages/District_of_Columbia.html">
-    <em>Atlas of Historical County Boundaries</em></a> and the <a 
-    href="http://www.archives.gov/research/guide-fed-records/groups/351.html">National 
-  Archives</a>). The start and end dates show most of the major boundary 
-changes for the first 48 states; there have been some minor boundary changes 
-since 1912. The dates for Reconstruction start with the First Reconstruction 
-Act and end with the date each state was re-admitted to Congress. This map is 
-intended primarily as a base layer for other historical maps that show change 
-over time (<a href="http://lincolnmullen.com/projects/paulists-map/">an 
-example</a>).  Keep in mind that &lsquo;the map is not the territory&rsquo;, 
-and that the continent was not empty of other peoples or polities.
-    </p>
-    <p>
-    The underlying data about the political boundaries is from John H.
-    Long, et al., <em><a href="http://publications.newberry.org/ahcbp/">Atlas 
-        of Historical County Boundaries</a></em>, Dr. William
-    M. Scholl Center for American History and Culture, The Newberry Library,
-    Chicago (2010), though I have added dates for secession and 
-    Reconstruction. The data for the North American continent is from <a 
-      href="http://www.naturalearthdata.com">Natural Earth</a>. 
-    </p>
-    <p>
-    Map by <a 
-      href="http://lincolnmullen.com">Lincoln Mullen</a>. <a 
-      href="https://github.com/lmullen/historical-us-boundaries">Code</a> 
-    licensed MIT. Suggestions welcome <a 
-      href="https://github.com/lmullen/historical-us-boundaries/issues">here</a>.
-    </p>
-    <hr>
-    <h5>Updates</h5>
-    <ul>
-      <li>29 April 2014: Added dates for ratification of the 
-      Constitution.</li>
-      <li>30 April 2014: Added note about the District of Columbia at the 
-      suggestion of <a href="http://zacharyschrag.com/">Zachary Schrag</a>.
-    </ul>
+  <div class="row">
+    <h1>Historical Boundaries of the United States, 1783&ndash;1912</h1>
+    <div id="viz"></div>
+    <div id="slider"></div>
   </div>
-</div>
-</div>
-<script src="visualization.js"></script>
-<p id="back-link">
-<a href="http://lincolnmullen.com">&larr; Back to home page</a>
-</p>
+  <div class="row">
+    <hr>
+  </div>
+  <div class="row">
+    <div id="description">
+      <p>
+        A map of how boundaries of the states and territories of the
+        United States changed over time. This map is limited to the contiguous
+        United States, and so does not include <a href="http://publications.newberry.org/ahcbp/pages/Alaska.html">Alaska</a>
+        (purchased from Russia in 1867, organized as a territory in 1912, recognized
+        as a state in 1959) or <a href="http://publications.newberry.org/ahcbp/pages/Hawaii.html">Hawaii</a>
+        (annexed 1898, organized as a territory in 1900, recognized as a state in
+        1959), or the many imperial ventures of the United States in Cuba, the
+        Philippines, and other places. For reasons of scale, the <a href="http://publications.newberry.org/ahcbp/pages/District_of_Columbia.html">District
+          of Columbia</a> is not shown, but DC was created in 1791, ceded territory back
+        to Virginia in 1846, and was organized as a territorial government from June
+        1, 1871 to June 20, 1874 (see chronologies from the and <a href="http://publications.newberry.org/ahcbp/pages/District_of_Columbia.html">
+          <em>Atlas of Historical County Boundaries</em></a> and the <a href="http://www.archives.gov/research/guide-fed-records/groups/351.html">National
+          Archives</a>). The start and end dates show most of the major boundary
+        changes for the first 48 states; there have been some minor boundary changes
+        since 1912. The dates for Reconstruction start with the First Reconstruction
+        Act and end with the date each state was re-admitted to Congress. This map is
+        intended primarily as a base layer for other historical maps that show change
+        over time (<a href="http://lincolnmullen.com/projects/paulists-map/">an
+          example</a>). Keep in mind that &lsquo;the map is not the territory&rsquo;,
+        and that the continent was not empty of other peoples or polities.
+      </p>
+      <p>
+        The underlying data about the political boundaries is from John H.
+        Long, et al., <em><a href="http://publications.newberry.org/ahcbp/">Atlas
+            of Historical County Boundaries</a></em>, Dr. William
+        M. Scholl Center for American History and Culture, The Newberry Library,
+        Chicago (2010), though I have added dates for secession and
+        Reconstruction. The data for the North American continent is from <a href="http://www.naturalearthdata.com">Natural Earth</a>.
+      </p>
+      <p>
+        Map by <a href="http://lincolnmullen.com">Lincoln Mullen</a>. <a href="https://github.com/lmullen/historical-us-boundaries">Code</a>
+        licensed MIT. Suggestions welcome <a href="https://github.com/lmullen/historical-us-boundaries/issues">here</a>.
+      </p>
+      <hr>
+      <h5>Updates</h5>
+      <ul>
+        <li>29 April 2014: Added dates for ratification of the
+          Constitution.</li>
+        <li>30 April 2014: Added note about the District of Columbia at the
+          suggestion of <a href="http://zacharyschrag.com/">Zachary Schrag</a>.
+      </ul>
+    </div>
+  </div>
+  </div>
+  <script src="visualization.js"></script>
+  <p id="back-link">
+    <a href="http://lincolnmullen.com">&larr; Back to home page</a>
+  </p>
+  <script>
+    var _paq = window._paq || [];
+    _paq.push(["setDocumentTitle", document.domain + " / " + document.title]);
+    _paq.push(["setCookieDomain", "*.lincolnmullen.com"]);
+    _paq.push(["setDoNotTrack", true]);
+    _paq.push(['trackPageView']);
+    _paq.push(['enableLinkTracking']);
+    (function () {
+      var u = "//analytics.lincolnmullen.com/";
+      _paq.push(['setTrackerUrl', u + 'matomo.php']);
+      _paq.push(['setSiteId', '1']);
+      var d = document, g = d.createElement('script'), s = d.getElementsByTagName('script')[0];
+      g.type = 'text/javascript'; g.async = true; g.defer = true; g.src = u + 'matomo.js'; s.parentNode.insertBefore(g, s);
+    })();
+  </script>
 </body>
+
 </html>
